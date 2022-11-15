@@ -1,0 +1,69 @@
+Write a Stored Procedure namely proc_Grade for the categorization of student. If marks scored
+by students in examination is <=1500 and marks>=990 then student will be placed in distinction
+category if marks scored are between 989 and900 category is first class, if marks 899 and 825
+category is Higher Second Class Write a PL/SQL block for using procedure created with above
+requirement.
+Stud_Marks(name, total_marks)
+mysql> create database marks;
+Query OK, 1 row affected (0.12 sec)
+mysql> use marks;
+Database changed
+mysql> create table studmarks(name varchar(20),total_marks integer);
+Query OK, 0 rows affected (0.30 sec)
+mysql> create table result(roll_no integer,name varchar(20),class varchar(25));
+Query OK, 0 rows affected (0.28 sec)
+mysql> DELIMITER $
+mysql> create procedure proc_grade(in rollno tinyint,in name varchar(15),in marks int)
+-> begin
+-> declare class varchar(25);
+-> if marks>=990 and marks<=1500 then set class="Distinction";
+-> elseif marks<=989 and marks>=900 then set class="First Class";
+-> elseif marks<=899 and marks>=825 then set class="Second Class";
+-> elseif marks<=824 and marks>=700 then set class="Pass";
+-> else
+-> set class="Fail";
+-> end if;
+-> insert into studmarks values(name,marks);
+-> insert into result values(rollno,name,class);
+-> end$
+Query OK, 0 rows affected (0.08 sec)
+mysql> DELIMITER $
+mysql> call proc_grade(1,"Aryan",850);
+-> DELIMITER $
+Query OK, 1 row affected (0.34 sec)
+mysql> call proc_grade(2,"Peter",1000);
+-> DELIMITER $
+Query OK, 1 row affected (0.25 sec)
+mysql> call proc_grade(3,"Smith",834);
+-> DELIMITER $
+Query OK, 1 row affected (0.09 sec)
+mysql> call proc_grade(4,"Carol",750);
+-> DELIMITER $
+Query OK, 1 row affected (0.10 sec)
+mysql> call proc_grade(5,"Bob",950);
+-> DELIMITER $
+Query OK, 1 row affected (0.07 sec)
+mysql> select * from result;
+-> DELIMITER $
++---------+-------+--------------+
+| roll_no | name | class |
++---------+-------+--------------+
+| 1 | Aryan | Second Class |
+| 2 | Peter | Distinction |
+| 3 | Smith | Second Class |
+| 4 | Carol | Pass |
+| 5 | Bob | First Class |
++---------+-------+--------------+
+5 rows in set (0.04 sec)
+mysql> select * from studmarks;
+-> DELIMITER $
++-------+-------------+
+| name | total_marks |
++-------+-------------+
+| Aryan | 850 |
+| Peter | 1000 |
+| Smith | 834 |
+| Carol | 750 |
+| Bob | 950 |
++-------+-------------+
+5 rows in set (0.00 sec)
